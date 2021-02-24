@@ -1,5 +1,1 @@
-import { Shared } from '@vue/shared';
-
-const Reactivity = {};
-
-export { Reactivity };
+export { reactive, shallowReactive, readonly, shallowReadonly } from './reactive';
