@@ -1,4 +1,4 @@
-import { isArray, isIntegerKey, hasOwn, hasChange } from './../../shared/src/index';
+import { isArray, isIntegerKey, hasOwn, hasChanged } from './../../shared/src/index';
 import { extend, isObject } from '@vue/shared';
 import { track, trigger } from './effect';
 import { TrackOpTypes, TriggerOrTypes } from './operators';
@@ -31,7 +31,7 @@ function createSetter(shallow = false) {
 
     if(!hadKey){
       trigger(target, TriggerOrTypes.ADD, key, value);
-    }else if(hasChange(oldValue, value)){
+    }else if(hasChanged(oldValue, value)){
       trigger(target, TriggerOrTypes.SET, key, value, oldValue);
     }
 

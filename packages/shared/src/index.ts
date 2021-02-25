@@ -7,4 +7,4 @@ export const isString = (value) => typeof value === 'string';
 export const isIntegerKey = (key) => parseInt(key) + '' === key;
 let hasOwnProperty = Object.prototype.hasOwnProperty;
 export const hasOwn = (target, key) => hasOwnProperty.call(target, key);
-export const hasChange = (oldValue, value) => oldValue !== value;
+export const hasChanged = (oldValue, value) => oldValue !== value;
