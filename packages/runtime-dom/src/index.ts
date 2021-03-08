@@ -8,7 +8,7 @@ const renderOptions = extend({ patchProp }, nodeOps);
 export function createApp(rootComponent, rootProps = null) {
   const app = createRenderer(renderOptions).createApp(rootComponent, rootProps);
   let { mount } = app;
-  app.mount = (container) => {
+  app.mount = (container: any) => {
     container = nodeOps.querySelector(container);
     container.innerHTML = '';
     mount(container);
