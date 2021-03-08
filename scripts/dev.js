@@ -1,6 +1,8 @@
 const execa = require('execa');
 
-const targets = 'reactivity';
+// const targets = 'reactivity';
+const targets = 'runtime-dom';
+
 
 // 一次并行打包
 async function build(target) {
