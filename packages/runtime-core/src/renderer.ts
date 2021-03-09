@@ -3,8 +3,8 @@ import { createAppAPI } from './apiCreateApp';
 import { createComponentInstance, setupComponent } from './component';
 
 export function createRenderer(renderOptions) {
-  const setupRenderEffect = () => {
-    
+  const setupRenderEffect = (instance) => {
+    instance.render();
   };
 
   const mountComponent = (initialVNode, container) => {
@@ -12,7 +12,7 @@ export function createRenderer(renderOptions) {
       initialVNode
     ));
     setupComponent(instance);
-    setupRenderEffect();
+    setupRenderEffect(instance);
   };
 
   const processComponent = (n1, n2, container) => {

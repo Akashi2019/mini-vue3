@@ -1,4 +1,4 @@
-import { ShapeFlags } from '@vue/shared';
+import { ShapeFlags, isFunction, isObject } from '@vue/shared';
 import { PublicInstanceProxyHandlers } from './PublicInstanceProxyHandlers';
 export function createComponentInstance(vnode) {
   const instance = {
@@ -32,11 +32,32 @@ export function setupComponent(instance) {
 
 function setupStatefulComponent(instance) {
   instance.proxy = new Proxy(instance.ctx, PublicInstanceProxyHandlers as any);
-  let { setup, render } = instance.type;
-  let setupContext = createSetupContext(instance);
+  let { setup } = instance.type;
+  if (setup) {
+    let setupContext = createSetupContext(instance);
+    const setupResult = setup(instance.props, setupContext);
+    handleSetupResult(instance, setupResult);
+  } else {
+    finishComponentSetup(instance);
+  }
+}
 
-  setup(instance.props, setupContext);
-  render(instance.proxy);
+function handleSetupResult(instance, setupResult) {
+  if (isFunction(setupResult)) {
+    instance.render = setupResult;
+  }else if(isObject(setupResult)){
+    instance.setupState = setupResult;
+  }
+  finishComponentSetup(instance);
+}
+
+function finishComponentSetup(instance) {
+  let { render, template } = instance.type;
+  if (!instance.render) {
+    if(!render && template){
+      instance.render = render;
+    }
+  }
 }
 
 function createSetupContext(instance) {
