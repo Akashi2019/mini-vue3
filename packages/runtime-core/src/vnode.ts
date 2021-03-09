@@ -1,6 +1,10 @@
 import { isArray } from './../../shared/src/index';
 import { isString, ShapeFlags, isObject } from '@vue/shared';
 
+export function isVnode(vnode) {
+  return vnode.__v_isVnode;
+}
+
 export const createVNode = (type, props, children = null) => {
   const shapeFlag = isString(type)
     ? ShapeFlags.ELEMENT
@@ -33,4 +37,10 @@ function normalizeChildren(vnode, children) {
   }
 
   vnode.shapeFlag |= type;
+}
+
+export const Text = Symbol('Text');
+export function normalizeVNode(child) {
+  if (isObject(child)) return child;
+  return createVNode(Text, null, String(child));
 }
