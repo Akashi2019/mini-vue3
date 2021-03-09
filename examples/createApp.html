@@ -12,8 +12,13 @@
     <script>
       let { createApp } = VueRuntimeDom;
       let App = {
-        render() {
-          console.log('render');
+        setup(props, context){
+          console.log('context.props: ', context.props);
+          console.log('props: ', props);
+          console.log(context.props === props);
+        },
+        render(proxy) {
+          console.log('proxy: ', proxy);
         }
       };
 
