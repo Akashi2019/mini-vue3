@@ -108,6 +108,55 @@ export function createRenderer(renderOptions) {
     }
   };
 
+  const getSequence = (arr) => {
+    const len = arr.length;
+    const result = [0];
+    const p = arr.slice(0);
+    let start;
+    let end;
+    let middle;
+
+    for (let i = 0; i < len; i++) {
+      const arrI = arr[i];
+      if (arrI !== 0) {
+        let resultLastIndex = result[result.length - 1];
+
+        if (arr[resultLastIndex] < arrI) {
+          p[i] = resultLastIndex;
+          result.push(i);
+          continue;
+        }
+
+        start = 0;
+        end = result.length - 1;
+        while (start < end) {
+          middle = ((start + end) / 2) | 0;
+          if (arr[result[middle]] < arrI) {
+            start = middle + 1;
+          } else {
+            end = middle;
+          }
+        }
+
+        if (arrI < arr[result[start]]) {
+          if (start > 0) {
+            p[i] = result[start - 1];
+          }
+          result[start] = i;
+        }
+      }
+    }
+
+    let len1 = result.length;
+    let last = result[len1 - 1];
+    while (len1-- > 0) {
+      result[len1] = last;
+      last = p[last];
+    }
+
+    return result;
+  };
+
   const patchKeyedChildren = (c1, c2, el) => {
     let i = 0;
     let e1 = c1.length - 1;
@@ -174,6 +223,9 @@ export function createRenderer(renderOptions) {
         }
       }
 
+      let increaseingNewIndexSequence = getSequence(newIndexToOldIndexMap);
+      let j = increaseingNewIndexSequence.length - 1;
+
       for (let i = toBePatched - 1; i >= 0; i--) {
         let currentIndex = i + s2;
         const child = c2[currentIndex];
@@ -182,7 +234,11 @@ export function createRenderer(renderOptions) {
         if (newIndexToOldIndexMap[i] === 0) {
           patch(null, child, el, anchor);
         } else {
-          hostInsert(child.el, el, anchor);
+          if (i != increaseingNewIndexSequence[j]) {
+            hostInsert(child.el, el, anchor);
+          } else {
+            j--;
+          }
         }
       }
     }

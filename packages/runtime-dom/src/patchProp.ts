@@ -15,7 +15,7 @@ export const patchProp = (el, key, prevValue, nextValue) => {
       if(/^on[^a-z]/.test(key)){
         patchEvent(el, key, nextValue);
       }else{
-
+        patchAttr(el, key, nextValue);
       }
       break;
   }
