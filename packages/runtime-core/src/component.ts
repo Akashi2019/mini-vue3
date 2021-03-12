@@ -54,7 +54,8 @@ function handleSetupResult(instance, setupResult) {
 function finishComponentSetup(instance) {
   let { render, template } = instance.type;
   if (!instance.render) {
-    if(!render && template){
+    //if(!render && template){
+    if(render || template){
       instance.render = render;
     }
   }
