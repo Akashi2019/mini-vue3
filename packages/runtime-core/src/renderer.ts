@@ -1,3 +1,4 @@
+import { invokeArrayFns } from './apiLifecycle';
 import { effect } from '@vue/reactivity';
 import { ShapeFlags } from '@vue/shared';
 import { createAppAPI } from './apiCreateApp';
@@ -22,6 +23,11 @@ export function createRenderer(renderOptions) {
     instance.update = effect(
       function componentEffect() {
         if (!instance.isMounted) {
+          let { bm, m } = instance;
+          if (bm) {
+            invokeArrayFns(bm);
+          }
+
           let proxyToUse = instance.proxy;
           let subTree = (instance.subTree = instance.render.call(
             proxyToUse,
@@ -29,12 +35,25 @@ export function createRenderer(renderOptions) {
           ));
           patch(null, subTree, container);
           instance.isMounted = true;
+
+          if (m) {
+            invokeArrayFns(m);
+          }
         } else {
+          let { bu, u } = instance;
+          if (bu) {
+            invokeArrayFns(bu);
+          }
+
           const prevTree = instance.subTree;
           let proxyToUse = instance.proxy;
           const nextTree = instance.render.call(proxyToUse, proxyToUse);
 
           patch(prevTree, nextTree, container);
+
+          if (u) {
+            invokeArrayFns(u);
+          }
         }
       },
       {

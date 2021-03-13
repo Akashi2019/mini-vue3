@@ -30,12 +30,21 @@ export function setupComponent(instance) {
   }
 }
 
+export let currentInstance = null;
+export let setCurrentInstance = (instance) => {
+  currentInstance = instance;
+};
+export let getCurrentInstance = () => {
+  return currentInstance;
+};
 function setupStatefulComponent(instance) {
   instance.proxy = new Proxy(instance.ctx, PublicInstanceProxyHandlers as any);
   let { setup } = instance.type;
   if (setup) {
+    currentInstance = instance;
     let setupContext = createSetupContext(instance);
     const setupResult = setup(instance.props, setupContext);
+    currentInstance = null;
     handleSetupResult(instance, setupResult);
   } else {
     finishComponentSetup(instance);
@@ -45,7 +54,7 @@ function setupStatefulComponent(instance) {
 function handleSetupResult(instance, setupResult) {
   if (isFunction(setupResult)) {
     instance.render = setupResult;
-  }else if(isObject(setupResult)){
+  } else if (isObject(setupResult)) {
     instance.setupState = setupResult;
   }
   finishComponentSetup(instance);
@@ -54,10 +63,9 @@ function handleSetupResult(instance, setupResult) {
 function finishComponentSetup(instance) {
   let { render, template } = instance.type;
   if (!instance.render) {
-    //if(!render && template){
-    if(render || template){
-      instance.render = render;
+    if (!render && template) {
     }
+    instance.render = render;
   }
 }
 
